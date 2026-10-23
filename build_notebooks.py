@@ -10,7 +10,7 @@ from pathlib import Path
 
 import nbformat as nbf
 
-from blocos import CONTAR, SETUP_1, SETUP_2, SETUP_3, SETUP_4
+from blocos import CONTAR, SETUP_1, SETUP_2, SETUP_3, SETUP_4, SETUP_5
 from comum import INSTALL, badge, novo_notebook
 from exercicios import EXERCICIOS, celulas_exercicios, id_exercicio
 
@@ -152,5 +152,33 @@ Em seguida a base vira um medidor: a cabeça some, fica o vetor de 512 números,
 Peso emprestado não vem neutro. O número que decide é o acerto no seu conjunto, e vale repetir a medida quando o dado muda de jeito. O par pequeno é um jeito de acrescentar tarefa sem reescrever a matriz. Isso ainda não treina um modelo de linguagem.
 
 Os exercícios usam `A`, `B`, `W`, `y_prova`, `acuracia_linear`, `feats_prova` e `feats_longe`.
+"""),
+])
+
+notebook("05-pneumonia-keras.ipynb", [
+    ("md", """
+{BADGE}
+
+# 5. Pneumonia com Keras
+
+O raio-x de tórax chega em duas pastas: normal e pneumonia. São radiografias de um conjunto público, rotuladas por quem examina o filme. A rede não nasce vazia. O MobileNetV2 já viu milhões de fotos comuns. A base fica parada. A cabeça nova, feita no Keras, só aprende a escolher entre essas duas pastas.
+
+Duas épocas num punhado de exames mostram o caminho. Isso ainda não é um laudo. O peso veio de foto de objeto, não de hospital, e a prova daqui é pequena.
+"""),
+    ("code", "!pip install -q tensorflow"),
+    ("md", """
+## A base emprestada, a cabeça do exame
+
+O zip é a parte de validação do conjunto Chest X-Ray (Kermany e colegas, CC BY 4.0), espelhado no Hugging Face. De cada pasta saem 24 imagens para treinar e 8 que ficam de fora.
+
+`include_top=False` tira a cabeça das mil classes do ImageNet. `trainable = False` trava o resto. A camada `Dense` de duas saídas é o único pedaço que o `Adam` mexe.
+"""),
+    ("code", SETUP_5),
+    ("md", """
+## O que fica
+
+A base descreve a imagem. A cabeça diz normal ou pneumonia. O número que o exercício pede é o dos pesos que ainda podem mudar. O acerto impresso acima foi medido nas radiografias que não entraram no ajuste. Ele não autoriza decisão clínica.
+
+O exercício usa `modelo` e `tf`.
 """),
 ])

@@ -1,6 +1,6 @@
 # Transfer learning no Colab
 
-Quatro notebooks curtos. A ResNet-18 chega com os pesos do ImageNet, a cabeça nova aprende o rótulo, a base fica parada, e a prova é um conjunto que o treino não viu.
+Cinco notebooks. A base chega pronta, a cabeça aprende o rótulo, e a prova é um conjunto que o treino não viu. O quinto notebook faz isso com radiografia de pneumonia, no Keras.
 
 | Aula | Abrir |
 |---|---|
@@ -8,10 +8,11 @@ Quatro notebooks curtos. A ResNet-18 chega com os pesos do ImageNet, a cabeça n
 | 2. Congelar e soltar | [![Abrir no Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/naubergois/curso-transfer-colab/blob/main/notebooks/02-congelar-e-soltar.ipynb) |
 | 3. Poucas fotos | [![Abrir no Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/naubergois/curso-transfer-colab/blob/main/notebooks/03-poucas-fotos.ipynb) |
 | 4. Medir no seu dado | [![Abrir no Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/naubergois/curso-transfer-colab/blob/main/notebooks/04-medir-no-seu-dado.ipynb) |
+| 5. Pneumonia com Keras | [![Abrir no Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/naubergois/curso-transfer-colab/blob/main/notebooks/05-pneumonia-keras.ipynb) |
 
-No Colab, use **Ambiente de execução → Executar tudo**. CPU basta. O arquivo de pesos baixa uma vez.
+No Colab, use **Ambiente de execução → Executar tudo**. CPU basta. O arquivo de pesos baixa uma vez. Na aula 5, a radiografia baixa junto.
 
-## Os 24 exercícios, um notebook cada
+## Os 25 exercícios, um notebook cada
 
 Cada exercício também existe como notebook próprio: prepara o modelo, deixa uma célula para você tentar e mostra uma solução conferida.
 
@@ -41,6 +42,7 @@ Cada exercício também existe como notebook próprio: prepara o modelo, deixa u
 | 4 | 4. Tamanho da prova | [Colab](https://colab.research.google.com/github/naubergois/curso-transfer-colab/blob/main/exercicios/aula4-exercicio4-tamanho-da-prova.ipynb) |
 | 4 | 5. Acerto no seu dado | [Colab](https://colab.research.google.com/github/naubergois/curso-transfer-colab/blob/main/exercicios/aula4-exercicio5-acerto-no-seu-dado.ipynb) |
 | 4 | 6. Acerto no dado longe | [Colab](https://colab.research.google.com/github/naubergois/curso-transfer-colab/blob/main/exercicios/aula4-exercicio6-acerto-no-dado-longe.ipynb) |
+| 5 | 1. Pesos que ainda treinam | [Colab](https://colab.research.google.com/github/naubergois/curso-transfer-colab/blob/main/exercicios/aula5-exercicio1-pesos-que-ainda-treinam.ipynb) |
 
 Os exercícios ficam em `exercicios.py`. Os notebooks avulsos são gerados por `build_exercicios.py`.
 

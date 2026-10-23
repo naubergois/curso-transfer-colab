@@ -261,9 +261,28 @@ VERIFICAR = {
     ],
 }
 
+AULA5 = {
+    "preparo": '''
+import tensorflow as tf
+
+VERIFICAR = {
+    1: lambda r: int(r) == sum(int(tf.reduce_prod(tf.shape(p)).numpy()) for p in modelo.trainable_weights),
+}
+''',
+    "lista": [
+        {
+            "titulo": "Pesos que ainda treinam",
+            "enunciado": "A base do MobileNetV2 ficou congelada. Quantos parâmetros de `modelo` ainda podem mudar? É a cabeça nova, a que separa normal de pneumonia.",
+            "dica": "modelo.trainable_weights lista só o que o Adam pode mexer. Some o tamanho de cada um.",
+            "solucao": "resposta = sum(int(tf.reduce_prod(tf.shape(p)).numpy()) for p in modelo.trainable_weights)",
+        },
+    ],
+}
+
 EXERCICIOS = {
     "01-o-peso-que-viajou.ipynb": AULA1,
     "02-congelar-e-soltar.ipynb": AULA2,
     "03-poucas-fotos.ipynb": AULA3,
     "04-medir-no-seu-dado.ipynb": AULA4,
+    "05-pneumonia-keras.ipynb": AULA5,
 }

@@ -11,7 +11,7 @@ PORTAL = Path("/Volumes/NAUBER/portal-nauber/public/curso-transfer")
 REPO = "https://github.com/naubergois/curso-transfer-colab"
 RAIZ = Path(__file__).parent
 
-ROTULO = {1: "Pesos", 2: "Base", 3: "Fotos", 4: "Medida"}
+ROTULO = {1: "Pesos", 2: "Base", 3: "Fotos", 4: "Medida", 5: "Raio-x"}
 
 AULAS_PAGINA = [
     (
@@ -64,6 +64,20 @@ base_andou = <b>(conv1 - antes).abs().max()</b>''',
 acerto_seu = prova(seu)
 acerto_longe = prova(<b>cor trocada</b>)''',
     ),
+    (
+        "05",
+        "Pneumonia com Keras",
+        "Radiografia de tórax, duas pastas: normal e pneumonia. O MobileNetV2 chega do ImageNet, a base fica parada e a cabeça nova aprende o exame.",
+        "CPU · cerca de 3 minutos · 1 exercício",
+        "notebooks/05-pneumonia-keras.ipynb",
+        '''base = MobileNetV2(
+    weights=<b>"imagenet"</b>,
+    include_top=False,
+)
+base.trainable = <b>False</b>
+
+Dense(<b>2</b>)  # normal ou pneumonia''',
+    ),
 ]
 
 
@@ -100,9 +114,11 @@ def aulas_html():
 
 
 def pagina():
+    itens = lista_exercicios()
+    n = len(itens)
     cards = "\n".join(
-        cartao(i, aula, n, ex, arquivo)
-        for i, (_nb, aula, n, ex, arquivo) in enumerate(lista_exercicios(), start=1)
+        cartao(i, aula, k, ex, arquivo)
+        for i, (_nb, aula, k, ex, arquivo) in enumerate(itens, start=1)
     )
     return f'''<!doctype html>
 <html lang="pt-BR">
@@ -110,7 +126,7 @@ def pagina():
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Transfer learning na prática: o peso que já veio | Nauber Gois</title>
-<meta name="description" content="Quatro notebooks de transfer learning no Colab: cabeça nova, base congelada, poucas fotos e a medida no seu conjunto. Vinte e quatro exercícios.">
+<meta name="description" content="Cinco notebooks de transfer learning no Colab: cabeça nova, base congelada, poucas fotos, a medida no seu conjunto e pneumonia em radiografia com Keras.">
 <meta property="og:title" content="Transfer learning na prática, direto no Colab">
 <meta property="og:description" content="A rede já viu milhões de fotos. Você troca a cabeça, congela a base e mede no seu dado.">
 <style>
@@ -178,8 +194,8 @@ def pagina():
   <header>
     <h1>Transfer learning na prática: <span>o peso que já veio</span></h1>
     <p class="lead">Uma rede vazia precisa de milhares de fotos para aprender o que é uma borda. Uma ResNet que já viu o ImageNet chega com esse ofício pronto. O que muda é a cabeça, o pedaço que diz o rótulo do seu caso.</p>
-    <p class="lead">São quatro notebooks curtos. Cada um abre no Google Colab, baixa o peso uma vez e roda em CPU. O desenho é círculo e quadrado, para a conta caber em dois minutos. Foto de rua, de exame ou de fábrica pede o mesmo desenho e bem mais cuidado na prova.</p>
-    <p class="lead">São 24 exercícios, seis por aula, e cada um tem um notebook próprio. Você escreve a resposta, roda a célula e o notebook diz na hora se acertou. <a href="#exercicios">Ver os 24 exercícios</a>.</p>
+    <p class="lead">São cinco notebooks curtos. Cada um abre no Google Colab e roda em CPU. Os quatro primeiros usam um desenho simples, para a conta caber em dois minutos. O quinto abre radiografia de tórax, normal ou pneumonia, com Keras.</p>
+    <p class="lead">São {n} exercícios, e cada um tem um notebook próprio. Você escreve a resposta, roda a célula e o notebook diz na hora se acertou. <a href="#exercicios">Ver os {n} exercícios</a>.</p>
   </header>
 
   <div class="hero">
@@ -196,7 +212,7 @@ base.fc = Linear(512, <b>suas classes</b>)</pre>
 
   </div>
 
-  <h2 id="exercicios">Os 24 exercícios</h2>
+  <h2 id="exercicios">Os {n} exercícios</h2>
   <p class="lead">Cada exercício tem um notebook só dele. Ele prepara o modelo da aula, deixa uma célula para você tentar e mostra uma solução conferida. É só clicar em <strong>Abrir no Colab</strong>.</p>
   <div class="exercicios">
 {cards}
@@ -205,7 +221,7 @@ base.fc = Linear(512, <b>suas classes</b>)</pre>
   <h2>Como rodar</h2>
   <ol class="passos">
     <li>Clique em <strong>Abrir no Colab</strong> e entre com sua conta Google.</li>
-    <li>Menu <strong>Ambiente de execução → Executar tudo</strong>. CPU basta. O peso da ResNet baixa na primeira execução.</li>
+    <li>Menu <strong>Ambiente de execução → Executar tudo</strong>. CPU basta. O peso baixa na primeira execução. Na aula 5, a radiografia baixa junto, cerca de 40 MB.</li>
     <li>Se o Colab avisar que o notebook não é do Google, confirme em <strong>Executar mesmo assim</strong>.</li>
     <li>Nos exercícios, troque <code>resposta = None</code> pela sua resposta e rode a célula. A solução conferida vem na célula de baixo.</li>
     <li>Para guardar suas alterações, use <strong>Arquivo → Salvar uma cópia no Drive</strong>.</li>
@@ -213,7 +229,7 @@ base.fc = Linear(512, <b>suas classes</b>)</pre>
 
   <footer>
     O código está em <a href="{REPO}">github.com/naubergois/curso-transfer-colab</a>.
-    Os pesos vêm do ImageNet, pelo torchvision.
+    Os pesos de foto vêm do ImageNet. A aula 5 usa o MobileNetV2 no Keras e radiografias de tórax de Kermany, Zhang e Goldbaum, CC BY 4.0.
     A detecção com caixas está em <a href="https://naubergois.com/curso-yolo/">YOLO na prática</a>.
     <br>Nauber Gois · <a href="https://naubergois.com">naubergois.com</a>
   </footer>
@@ -227,27 +243,22 @@ def readme():
     linhas = [
         "# Transfer learning no Colab",
         "",
-        "Quatro notebooks curtos. A ResNet-18 chega com os pesos do ImageNet, a cabeça nova aprende o rótulo, a base fica parada, e a prova é um conjunto que o treino não viu.",
+        "Cinco notebooks. A base chega pronta, a cabeça aprende o rótulo, e a prova é um conjunto que o treino não viu. O quinto notebook faz isso com radiografia de pneumonia, no Keras.",
         "",
         "| Aula | Abrir |",
         "|---|---|",
     ]
-    titulos = [
-        "1. O peso que viajou",
-        "2. Congelar e soltar",
-        "3. Poucas fotos",
-        "4. Medir no seu dado",
-    ]
-    for titulo, (_num, _t, _texto, _meta, caminho, _codigo) in zip(titulos, AULAS_PAGINA):
+    for num, titulo, _texto, _meta, caminho, _codigo in AULAS_PAGINA:
         url = colab_url(caminho)
         linhas.append(
-            f"| {titulo} | [![Abrir no Colab](https://colab.research.google.com/assets/colab-badge.svg)]({url}) |"
+            f"| {int(num)}. {titulo} | [![Abrir no Colab](https://colab.research.google.com/assets/colab-badge.svg)]({url}) |"
         )
+    itens = lista_exercicios()
     linhas += [
         "",
-        "No Colab, use **Ambiente de execução → Executar tudo**. CPU basta. O arquivo de pesos baixa uma vez.",
+        "No Colab, use **Ambiente de execução → Executar tudo**. CPU basta. O arquivo de pesos baixa uma vez. Na aula 5, a radiografia baixa junto.",
         "",
-        "## Os 24 exercícios, um notebook cada",
+        f"## Os {len(itens)} exercícios, um notebook cada",
         "",
         "Cada exercício também existe como notebook próprio: prepara o modelo, deixa uma célula para você tentar e mostra uma solução conferida.",
         "",

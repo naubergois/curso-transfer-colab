@@ -199,3 +199,86 @@ print(f"posto {posto} | par {params_par} pesos | matriz cheia {params_cheia} pes
 print(f"prova: {len(y_prova)} fotos | acerto no seu dado {acerto_seu:.0%} | acerto com a cor trocada {acerto_longe:.0%}")
 print(f"o par cabe na matriz? {tuple((B @ A).shape) == tuple(W.shape)}")
 '''
+
+SETUP_5 = '''
+import random
+import shutil
+import urllib.request
+import zipfile
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import tensorflow as tf
+
+URL_RAIOX = (
+    "https://huggingface.co/datasets/keremberke/chest-xray-classification"
+    "/resolve/main/data/valid.zip"
+)
+arquivo = Path("valid.zip")
+if not arquivo.exists():
+    urllib.request.urlretrieve(URL_RAIOX, arquivo)
+if not Path("raiox/NORMAL").exists():
+    zipfile.ZipFile(arquivo).extractall("raiox")
+
+rng = random.Random(7)
+
+def partir(classe, n_treino, n_prova):
+    fotos = sorted((Path("raiox") / classe).glob("*.jpg"))
+    rng.shuffle(fotos)
+    return fotos[:n_treino], fotos[n_treino:n_treino + n_prova]
+
+for split in ("treino", "prova"):
+    shutil.rmtree(split, ignore_errors=True)
+for classe in ("NORMAL", "PNEUMONIA"):
+    treino_fotos, prova_fotos = partir(classe, 24, 8)
+    for split, fotos in (("treino", treino_fotos), ("prova", prova_fotos)):
+        destino = Path(split) / classe
+        destino.mkdir(parents=True)
+        for foto in fotos:
+            shutil.copy(foto, destino / foto.name)
+
+tamanho = (128, 128)
+treino = tf.keras.utils.image_dataset_from_directory(
+    "treino", image_size=tamanho, batch_size=8, shuffle=False,
+)
+prova = tf.keras.utils.image_dataset_from_directory(
+    "prova", image_size=tamanho, batch_size=8, shuffle=False,
+)
+nomes = treino.class_names
+
+for imagens, rotulos in treino.take(1):
+    plt.figure(figsize=(8, 3))
+    for i in range(4):
+        plt.subplot(1, 4, i + 1)
+        plt.imshow(imagens[i].numpy().astype("uint8"))
+        plt.title(nomes[int(rotulos[i])])
+        plt.axis("off")
+    plt.show()
+    break
+
+preparar = tf.keras.applications.mobilenet_v2.preprocess_input
+treino_modelo = treino.map(lambda imagem, rotulo: (preparar(imagem), rotulo))
+prova_modelo = prova.map(lambda imagem, rotulo: (preparar(imagem), rotulo))
+
+base = tf.keras.applications.MobileNetV2(
+    input_shape=tamanho + (3,), include_top=False, weights="imagenet",
+)
+base.trainable = False
+entradas = tf.keras.Input(shape=tamanho + (3,))
+x = base(entradas, training=False)
+x = tf.keras.layers.GlobalAveragePooling2D()(x)
+saidas = tf.keras.layers.Dense(len(nomes), activation="softmax")(x)
+modelo = tf.keras.Model(entradas, saidas)
+modelo.compile(
+    optimizer=tf.keras.optimizers.Adam(1e-3),
+    loss="sparse_categorical_crossentropy",
+    metrics=["accuracy"],
+)
+modelo.fit(treino_modelo, epochs=2, verbose=0)
+perda, acerto = modelo.evaluate(prova_modelo, verbose=0)
+treinaveis = sum(int(tf.reduce_prod(tf.shape(p)).numpy()) for p in modelo.trainable_weights)
+print(f"classes: {nomes}")
+print(f"base pode mudar? {base.trainable}")
+print(f"pesos que ainda treinam: {treinaveis}")
+print(f"acerto na prova: {acerto:.0%}")
+'''

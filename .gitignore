@@ -3,3 +3,7 @@ __pycache__/
 .venv/
 .cache/
 *.pt
+valid.zip
+raiox/
+treino/
+prova/

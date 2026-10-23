@@ -7,7 +7,7 @@ from pathlib import Path
 
 import nbformat as nbf
 
-from blocos import CONTAR, SETUP_1, SETUP_2, SETUP_3, SETUP_4
+from blocos import CONTAR, SETUP_1, SETUP_2, SETUP_3, SETUP_4, SETUP_5
 from comum import INSTALL, badge, colab_url, novo_notebook
 from exercicios import CONFERIR, EXERCICIOS
 
@@ -33,6 +33,12 @@ AULAS = {
         "nome": "Medir no seu dado",
         "contexto": "A preparação monta o par `A` e `B` ao lado da matriz `W`, extrai o vetor da base e ajusta uma cabeça linear. A prova e o conjunto de cor trocada ficam de fora desse ajuste.",
         "setup": CONTAR + "\n" + SETUP_4,
+    },
+    "05-pneumonia-keras.ipynb": {
+        "nome": "Pneumonia com Keras",
+        "install": "!pip install -q tensorflow",
+        "contexto": "A preparação baixa radiografias de tórax já rotuladas como normal ou pneumonia, congela o MobileNetV2 que veio do ImageNet e treina só a cabeça por duas épocas.",
+        "setup": SETUP_5,
     },
 }
 
@@ -62,7 +68,11 @@ def gerar():
             fecho = (f"Próximo: [Aula {proximo[1]}, exercício {proximo[2]}: {proximo[3]['titulo']}]"
                      f"({colab_url('exercicios/' + proximo[4])}).")
         else:
-            fecho = "Esse foi o último dos 24. Agora é trocar o círculo e o quadrado pelas suas fotos, e medir de novo num conjunto que o treino não viu."
+            fecho = (
+                f"Esse foi o último dos {len(todos)}. "
+                "O acerto numa radiografia de treino ainda não é um laudo. "
+                "A prova continua sendo um conjunto que o ajuste não viu."
+            )
 
         celulas = [
             ("md", f"""{badge('exercicios/' + arquivo)}
@@ -72,7 +82,7 @@ def gerar():
 {ex['enunciado'].strip()}
 
 O exercício é da aula [{k}. {info['nome']}]({aula_url}), e este notebook roda sozinho. Use **Ambiente de execução → Executar tudo**: ele prepara o modelo, deixa uma célula para você tentar e, no fim, mostra uma solução já conferida."""),
-            ("code", INSTALL),
+            ("code", info.get("install", INSTALL)),
             ("md", f"## Preparação\n\n{info['contexto']}"),
             ("code", info["setup"]),
             ("form", "# @title Correção automática (rode, não precisa ler)\n"
